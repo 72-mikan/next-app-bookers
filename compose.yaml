@@ -1,0 +1,39 @@
+services:
+  front-app:
+    build: ./docker/front-app
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./src/front-app:/usr/src/front-app
+    environment:
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - db
+
+  back-app:
+    build: ./docker/back-app
+    ports:
+      - "3001:3000"
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./src/back-app:/usr/src/back-app
+    environment:
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:16-bookworm
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    volumes:
+      - data_volumes:/var/lib/postgresql
+
+volumes:
+  data_volumes:
